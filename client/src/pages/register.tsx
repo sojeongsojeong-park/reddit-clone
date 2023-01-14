@@ -24,7 +24,7 @@ const Register = () => {
 
       console.log(response);
 
-      // router.push("/login");
+      router.push("/login");
     } catch (error: any) {
       console.error("error: ", error);
       setErrors(error.response.data || {});
