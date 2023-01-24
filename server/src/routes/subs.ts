@@ -41,8 +41,6 @@ const createSub = async (req: Request, res: Response) => {
     sub.title = title;
     sub.user = user;
 
-    console.log(sub);
-
     await sub.save();
     return res.json(sub);
   } catch (error) {
