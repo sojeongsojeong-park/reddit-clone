@@ -1,15 +1,22 @@
 import Link from "next/link";
 import React, { Fragment } from "react";
-import { useAuthState } from "../context/auth";
+import { useAuthDispatch, useAuthState } from "../context/auth";
 import axios from "axios";
 
 const NavBar = () => {
   const { loading, authenticated } = useAuthState();
+  const dispatch = useAuthDispatch();
+
+  console.log(authenticated);
 
   const handleLogout = () => {
     axios
       .post("/auth/logout")
-      .then(() => {})
+      .then(() => {
+        dispatch("LOGOUT");
+
+        window.location.reload();
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -41,15 +48,17 @@ const NavBar = () => {
             </button>
           ) : (
             <Fragment>
-              <Link href='/login'>
-                <a className='w-20 p-2 mr-2 text-center text-blue-500 border border-blue-500 rounded'>
-                  Login
-                </a>
+              <Link
+                href='/login'
+                className='w-20 p-2 mr-2 text-center text-blue-500 border border-blue-500 rounded'
+              >
+                Login
               </Link>
-              <Link href='/register'>
-                <a className='w-20 p-2 text-center text-white bg-gray-400 rounded'>
-                  Sign up
-                </a>
+              <Link
+                href='/register'
+                className='w-20 p-2 text-center text-white bg-gray-400 rounded'
+              >
+                Sign up
               </Link>
             </Fragment>
           ))}

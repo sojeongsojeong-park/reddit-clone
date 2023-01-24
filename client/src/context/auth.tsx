@@ -49,7 +49,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loading: true,
   });
 
-  console.log("state:", state);
   const dispatch = (type: string, payload?: any) => {
     defaultDispatch({ type, payload });
   };
@@ -59,6 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       try {
         const res = await axios.get("/auth/me");
         dispatch("LOGIN", res.data);
+        console.log(res.data);
       } catch (error) {
         console.log(error);
       } finally {
