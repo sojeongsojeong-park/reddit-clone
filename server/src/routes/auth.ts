@@ -53,20 +53,21 @@ const register = async (req: Request, res: Response) => {
 };
 
 const login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
     let errors: any = {};
     //비워져 있다면 에러를 프론드로
-    if (isEmpty(email)) errors.username = "이메일은 비워둘 수 없습니다.";
+    if (isEmpty(username)) errors.username = "사용자 이름은 비워둘 수 없습니다.";
     if (isEmpty(password)) errors.password = "비밀번호는 비워둘 수 없습니다.";
     if (Object.keys(errors).length > 0) {
       return res.status(400).json(errors);
     }
 
     //디비에서 유저 찾기
-    const user = await User.findOneBy({ email });
-    if (!user) res.status(404).json({ email: "이메일이 등록되지 않았습니다." });
+    const user = await User.findOneBy({ username });
+    if (!user)
+      res.status(404).json({ username: "사용자 이름이 등록되지 않았습니다." });
 
     //유저가 있다면 비밀번호 비교하기
     const passwordMatches = await bcrypt.compare(password, user.password);
@@ -76,8 +77,8 @@ const login = async (req: Request, res: Response) => {
       return res.status(401).json({ password: "비밀번호가 잘못되었습니다." });
     }
     //비밀번호가 맞다면 토큰 생성
-    const token = jwt.sign({ email }, process.env.JWT_SECRET);
-
+    const token = jwt.sign({ username }, process.env.JWT_SECRET);
+    console.log(token);
     //쿠키 저장
     res.set(
       "Set-Cookie",
@@ -108,7 +109,6 @@ const logout = async (_: Request, res: Response) => {
   res.status(200).json({ success: true });
 };
 const me = async (_: Request, res: Response) => {
-  console.log(res.locals.user);
   return res.json(res.locals.user);
 };
 

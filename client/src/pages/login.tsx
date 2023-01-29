@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useAuthDispatch, useAuthState } from "../context/auth";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { authenticated } = useAuthState();
   const [errors, setErrors] = useState<any>({});
@@ -24,7 +24,7 @@ const Login = () => {
       const res = await axios.post(
         "/auth/login",
         {
-          email,
+          username,
           password,
         },
         { withCredentials: true }
@@ -44,10 +44,10 @@ const Login = () => {
           <h1 className='mb-2 text-lg font-medium'>로그인</h1>
           <form onSubmit={handleSubmit}>
             <InputGroup
-              placeholder='Email'
-              value={email}
-              setValue={setEmail}
-              error={errors.email}
+              placeholder='username'
+              value={username}
+              setValue={setUsername}
+              error={errors.username}
             />
             <InputGroup
               placeholder='Password'
