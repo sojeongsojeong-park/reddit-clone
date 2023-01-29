@@ -7,14 +7,13 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
+dotenv.config();
 const app = express();
 const origin = "http://localhost:3000";
 app.use(cors({ origin, credentials: true }));
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cookieParser());
-
-dotenv.config();
 
 app.get("/", (_, res) => res.send("running"));
 app.use("/api/auth", authRoutes);
