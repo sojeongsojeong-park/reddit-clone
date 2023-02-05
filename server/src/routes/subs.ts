@@ -55,7 +55,7 @@ const createSub = async (req: Request, res: Response) => {
 
 const topSubs = async (_: Request, res: Response) => {
   try {
-    const imageUrlExp = `COALESCE(s.'imageUrn', 'https://www.gravatar.com/avatar?d=mp&f=y')`;
+    const imageUrlExp = `COALESCE('${process.env.APP_URL}/images/' || s."imageUrn", 'https://www.gravatar.com/avatar?d=mp&f=y')`;
     const subs = await AppDataSource.createQueryBuilder()
       .select(
         `s.title, s.name, ${imageUrlExp} as "imageUrl", count(p.id) as "postCount"`
@@ -66,7 +66,6 @@ const topSubs = async (_: Request, res: Response) => {
       .orderBy(`"postCount"`, "DESC")
       .limit(5)
       .execute();
-
     return res.json(subs);
   } catch (error) {
     console.log(error);
@@ -81,6 +80,7 @@ const getSub = async (req: Request, res: Response) => {
 
     return res.json(sub);
   } catch (error) {
+    console.log(error);
     return res.status(404).json({ error: "커뮤니티를 찾을 수 없습니다. " });
   }
 };
@@ -121,46 +121,51 @@ const upload = multer({
 });
 
 const uploadSubImage = async (req: Request, res: Response) => {
-  const sub:Sub = res.locals.sub;
+  const sub: Sub = res.locals.sub;
 
-  try{
+  try {
     const type = req.body.type;
     //파일 유형을 지정하지 않았을 경우 업로드된 파일 삭제
-    if(type!=='image' && type !=='banner'){
-      if(!req.file?.path) {
-        return res.status(400).json({error: '유효하지 않은 파일입니다.'});
+    if (type !== "image" && type !== "banner") {
+      if (!req.file?.path) {
+        return res.status(400).json({ error: "유효하지 않은 파일입니다." });
       }
       //파일 지워주기
       unlinkSync(req.file.path);
-      return res.status(400).json({error: '잘못된 유형입니다.'})
+      return res.status(400).json({ error: "잘못된 유형입니다." });
     }
 
-    let oldImageUrn:string = ''
-    if(type==='image'){
+    let oldImageUrn: string = "";
+    if (type === "image") {
       //사용중인 urn을 지정합니다. 이전 파일을 삭제하기 위해!
-      oldImageUrn = sub.imageUrn || '';
+      oldImageUrn = sub.imageUrn || "";
       //새로운 파일 이름을 urn으로 넣어줌
       sub.imageUrn = req.file?.filename || "";
-    } else if(type === 'banner'){
+    } else if (type === "banner") {
       oldImageUrn = sub.bannerUrn || "";
-      sub.bannerUrn = req.file?.filename || ""
+      sub.bannerUrn = req.file?.filename || "";
     }
     await sub.save();
 
     //사용하지 않는 이미지 파일 삭제
-    if(oldImageUrn !== ""){
-      const fullFilename = path.resolve(process.cwd(), "public", "images", oldImageUrn);
+    if (oldImageUrn !== "") {
+      const fullFilename = path.resolve(
+        process.cwd(),
+        "public",
+        "images",
+        oldImageUrn
+      );
       unlinkSync(fullFilename);
     }
-    return res.json(sub)
-  }catch(error){
-    return res.status(500).json({error:"문제가 발생했습니다."})
+    return res.json(sub);
+  } catch (error) {
+    return res.status(500).json({ error: "문제가 발생했습니다." });
   }
-}
+};
 
 router.get("/:name", userMiddleware, getSub);
 router.post("/", userMiddleware, authMiddleware, createSub);
-router.get("/sub/topSubs", topSubs);
+router.get("/subs/topSubs", topSubs);
 router.post(
   "/:name/upload",
   userMiddleware,
