@@ -52,13 +52,16 @@ export default class Post extends BaseEntity {
   @OneToMany(() => Vote, (vote) => vote.post)
   votes: Vote[];
 
-  @Expose() get url(): string {
-    return `r/${this.subName}/${this.identifier}/${this.slug}`;
+  @Expose()
+  get url(): string {
+    return `/r/${this.subName}/${this.identifier}/${this.slug}`;
   }
-  @Expose() get commentCount(): number {
+  @Expose()
+  get commentCount(): number {
     return this.comments?.length;
   }
-  @Expose() get voteScore(): number {
+  @Expose()
+  get voteScore(): number {
     return this.votes?.reduce((memo, curt) => memo + (curt.value || 0), 0);
   }
 

@@ -12,6 +12,7 @@ const PostCreate = () => {
 
   const submitPost = async (e: FormEvent) => {
     e.preventDefault();
+    console.log(subName);
     if (title.trim() === "" || !subName) return;
 
     try {
@@ -20,7 +21,8 @@ const PostCreate = () => {
         body,
         sub: subName,
       });
-      router.push(`/r/${subName}/${post.indentifier}/${post.slug}`);
+      console.log(post);
+      router.push(`/r/${subName}/${post.identifier}/${post.slug}`);
     } catch (error) {
       console.log(error);
     }

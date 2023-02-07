@@ -11,18 +11,17 @@ export interface Sub {
   name: string;
   title: string;
   description: string;
-  imageUrn:string;
+  imageUrn: string;
   bannerUrn: string;
   username: string;
   posts: Post[];
-  postCount?:string;
-
+  postCount?: string;
   imageUrl: string;
   bannerUrl: string;
 }
 
 export interface Post {
-  indentifier: string;
+  identifier: string;
   title: string;
   slug: string;
   body: string;
@@ -31,20 +30,19 @@ export interface Post {
   createdAt: string;
   updatedAt: string;
   sub?: Sub;
-
   url: string;
-  userVote?:number;
-  voteScore?:number;
+  userVote?: number;
+  voteScore?: number;
   commentCount?: number;
 }
 
 export interface Comment {
-  indentifier: string;
+  identifier: string;
   body: string;
   username: string;
   createdAt: string;
   updatedAt: string;
-  post?:Post;
+  post?: Post;
   userVote: string;
   voteScore: string;
 }

@@ -7,11 +7,13 @@ import dayjs from "dayjs";
 
 const PostPage = () => {
   const router = useRouter();
-  const { indentifier, sub, slug } = router.query;
+  const { identifier, sub, slug } = router.query;
 
   const { data: post, error } = useSWR<Post>(
-    indentifier && slug ? `/posts/${indentifier}/${slug}` : null
+    identifier && slug ? `/posts/${identifier}/${slug}` : null
   );
+
+  console.log(post);
   return (
     <div className='flex max-w-5xl px-4 pt-5 mx-auto'>
       <div className='w-full md:mr-3 md:w-8/12'>
