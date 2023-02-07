@@ -17,20 +17,9 @@ const SubPage = () => {
   const [onSub, setOnSub] = useState(false);
   const { authenticated, user } = useAuthState();
 
-  const fetcher = async (url: string) => {
-    try {
-      const res = await axios.get(url);
-      return res.data;
-    } catch (error: any) {
-      throw error.response.data;
-    }
-  };
   const router = useRouter();
   const subName = router.query.sub;
-  const { data: sub, error } = useSWR(
-    subName ? `/subs/${subName}` : null,
-    fetcher
-  );
+  const { data: sub, error } = useSWR(subName ? `/subs/${subName}` : null);
   useEffect(() => {
     if (!sub || !user) return;
     setOnSub(authenticated && user.username === sub.username);
@@ -82,13 +71,11 @@ const SubPage = () => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
-                  onClick={() => openFileInput("banner")}
-                ></div>
+                  onClick={() => openFileInput("banner")}></div>
               ) : (
                 <div
                   className='h-20 bg-gray-400'
-                  onClick={() => openFileInput("banner")}
-                ></div>
+                  onClick={() => openFileInput("banner")}></div>
               )}
             </div>
             {/* community meta data */}
@@ -117,7 +104,7 @@ const SubPage = () => {
           </div>
           {/* post and sidebar */}
           <div className='flex max-w-5xl px-4 pt-5 mx-auto'>
-            <div className="w-full md:mr-3 md:w-8/12"></div>
+            <div className='w-full md:mr-3 md:w-8/12'></div>
             <Sidebar sub={sub} />
           </div>
         </Fragment>
