@@ -43,6 +43,6 @@ export interface Comment {
   createdAt: string;
   updatedAt: string;
   post?: Post;
-  userVote: string;
+  userVote: number;
   voteScore: string;
 }
