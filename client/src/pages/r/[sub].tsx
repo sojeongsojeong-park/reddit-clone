@@ -11,6 +11,8 @@ import React, {
 import useSWR from "swr";
 import Sidebar from "../../components/Sidebar";
 import { useAuthState } from "../../context/auth";
+import { PostCard } from "../../components/PostCard";
+import { Post } from "../../types";
 
 const SubPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -19,7 +21,11 @@ const SubPage = () => {
 
   const router = useRouter();
   const subName = router.query.sub;
-  const { data: sub, error } = useSWR(subName ? `/subs/${subName}` : null);
+  const {
+    data: sub,
+    error,
+    mutate,
+  } = useSWR(subName ? `/subs/${subName}` : null);
   useEffect(() => {
     if (!sub || !user) return;
     setOnSub(authenticated && user.username === sub.username);
@@ -49,6 +55,20 @@ const SubPage = () => {
       fileInput.click();
     }
   };
+
+  let renderPosts;
+  console.log(sub);
+  if (!sub) {
+    renderPosts = <p className='text-lg text-center'>now loading...</p>;
+  } else if (sub.posts.length === 0) {
+    renderPosts = (
+      <p className='text-lg text-center'>No posts have been created yet</p>
+    );
+  } else {
+    renderPosts = sub.posts.map((post: Post) => (
+      <PostCard key={post.identifier} post={post} subMutate={mutate} />
+    ));
+  }
   return (
     <>
       {sub && (
@@ -71,11 +91,13 @@ const SubPage = () => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
-                  onClick={() => openFileInput("banner")}></div>
+                  onClick={() => openFileInput("banner")}
+                ></div>
               ) : (
                 <div
                   className='h-20 bg-gray-400'
-                  onClick={() => openFileInput("banner")}></div>
+                  onClick={() => openFileInput("banner")}
+                ></div>
               )}
             </div>
             {/* community meta data */}
@@ -104,7 +126,7 @@ const SubPage = () => {
           </div>
           {/* post and sidebar */}
           <div className='flex max-w-5xl px-4 pt-5 mx-auto'>
-            <div className='w-full md:mr-3 md:w-8/12'></div>
+            <div className='w-full md:mr-3 md:w-8/12'>{renderPosts}</div>
             <Sidebar sub={sub} />
           </div>
         </Fragment>
