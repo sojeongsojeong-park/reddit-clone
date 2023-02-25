@@ -11,6 +11,7 @@ import axios from "axios";
 interface PostCardProps {
   post: Post;
   subMutate?: () => void;
+  mutate?: () => void;
 }
 export const PostCard = ({
   post: {
@@ -27,6 +28,7 @@ export const PostCard = ({
     username,
     sub,
   },
+  mutate,
   subMutate,
 }: PostCardProps) => {
   const { authenticated } = useAuthState();
@@ -39,6 +41,7 @@ export const PostCard = ({
 
     try {
       await axios.post("/votes", { identifier, slug, value });
+      if (mutate) mutate();
       if (subMutate) subMutate();
     } catch (error) {
       console.log(error);
@@ -51,7 +54,8 @@ export const PostCard = ({
         {/* like */}
         <div
           className='flex justify-center w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-red-500'
-          onClick={() => vote(1)}>
+          onClick={() => vote(1)}
+        >
           {userVote === 1 ? (
             <FaArrowUp className='mx-auto text-red-500' />
           ) : (
@@ -62,7 +66,8 @@ export const PostCard = ({
         {/* dislike */}
         <div
           className='flex justify-center w-6 mx-auto text-gray-400 rounded cursor-pointer hover:bg-gray-300 hover:text-blue-500'
-          onClick={() => vote(-1)}>
+          onClick={() => vote(-1)}
+        >
           {userVote === -1 ? (
             <FaArrowDown className='mx-auto text-blue-500' />
           ) : (
@@ -78,13 +83,16 @@ export const PostCard = ({
               <Link href={`/r/${subName}`}>
                 <Image
                   src={sub!.imageUrl}
+                  width={24}
+                  height={24}
                   alt='sub'
                   className='w-6 h-6 mr-1 rounded-full cursor-pointer'
                 />
               </Link>
               <Link
                 href={`/r/${subName}`}
-                className='ml-2 text-xs font-bold cursor-pointer hover:underline'>
+                className='ml-2 text-xs font-bold cursor-pointer hover:underline'
+              >
                 /r/{subName}
               </Link>
               <span className='mx-1 text-xs text-gray-400'>•</span>
