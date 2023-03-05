@@ -20,15 +20,15 @@ const UserPage = () => {
       <div className='w-full md:mr-3 md:w-8/12'>
         {data.userData.map((d: any) => {
           if (data.type === "Post") {
-            const post: Post = data;
+            const post: Post = d;
             return <PostCard key={post.identifier} post={post} />;
           } else {
-            const comment: Comment = data;
+            const comment: Comment = d;
             return (
               <div
                 key={comment.identifier}
                 className='flex my-4 bg-white rounded'>
-                <div className='flex-shrink-0 w-10 py-10 text-center bg-gray-200 rounded-l'>
+                <div className='flex-shrink-0 w-10 py-10 text-center bg-white border-r rounded-l'>
                   <i className='text-gray-500 fas fa-comment-alt fa-xs'></i>
                 </div>
                 <div className='w-full p-2'>
@@ -44,7 +44,7 @@ const UserPage = () => {
                       className='cursor-pointer font-semibold hover:underline'>
                       {comment.post?.title}
                     </Link>
-                    <span>*</span>
+                    <span>•</span>
                     <Link
                       href={`/u/${comment.post?.subName}`}
                       className='cursor-pointer text-black hover:underline'>
@@ -71,7 +71,7 @@ const UserPage = () => {
           />
           <p className='pl-2 text-md'> {data.user.username}</p>
         </div>
-        <div>
+        <div className='p-2 bg-white rounded-b'>
           <p>{dayjs(data.user.createdAt).format("YYYY.MM.DD")} 가입</p>
         </div>
       </div>
